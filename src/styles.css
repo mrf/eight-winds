@@ -6,15 +6,27 @@
   --line: #d8d2c4;
   --accent: #7a6f5d;
 
-  /* Eight desaturated hues of one wheel — no valence, all equal weight (§4.1). */
-  --wind-gain: #b8ab8e;
-  --wind-praise: #b0ad88;
-  --wind-pleasure: #9cae92;
-  --wind-fame: #8fac9f;
-  --wind-loss: #90a6ac;
-  --wind-blame: #9d9fae;
-  --wind-pain: #ab9aa5;
-  --wind-disrepute: #b3a094;
+  /* Eight hues of one perceptually uniform wheel (§4.1): identical OKLCH
+     lightness and chroma for every wind — equal weight by construction, no
+     valence coding — spaced 45° apart, so each wind's hue is the exact
+     complement of its opposite across the compass. Hex lines are sRGB
+     fallbacks for the oklch() values that follow. */
+  --wind-gain: #b9a987;
+  --wind-praise: #a0b291;
+  --wind-pleasure: #8ab6a9;
+  --wind-fame: #88b3c1;
+  --wind-loss: #9babcb;
+  --wind-blame: #b5a3c3;
+  --wind-pain: #c69eac;
+  --wind-disrepute: #c8a193;
+  --wind-gain: oklch(0.74 0.05 85);
+  --wind-praise: oklch(0.74 0.05 130);
+  --wind-pleasure: oklch(0.74 0.05 175);
+  --wind-fame: oklch(0.74 0.05 220);
+  --wind-loss: oklch(0.74 0.05 265);
+  --wind-blame: oklch(0.74 0.05 310);
+  --wind-pain: oklch(0.74 0.05 355);
+  --wind-disrepute: oklch(0.74 0.05 40);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +37,25 @@
     --ink-soft: #a09a8d;
     --line: #3d3931;
     --accent: #a89c86;
+
+    /* Same wheel, dimmed for dark paper: lower lightness, a touch more
+       chroma so the hues stay legible. */
+    --wind-gain: #8f7e5a;
+    --wind-praise: #758764;
+    --wind-pleasure: #5c8b7e;
+    --wind-fame: #5a8897;
+    --wind-loss: #7080a2;
+    --wind-blame: #8a7799;
+    --wind-pain: #9b7382;
+    --wind-disrepute: #9e7568;
+    --wind-gain: oklch(0.6 0.055 85);
+    --wind-praise: oklch(0.6 0.055 130);
+    --wind-pleasure: oklch(0.6 0.055 175);
+    --wind-fame: oklch(0.6 0.055 220);
+    --wind-loss: oklch(0.6 0.055 265);
+    --wind-blame: oklch(0.6 0.055 310);
+    --wind-pain: oklch(0.6 0.055 355);
+    --wind-disrepute: oklch(0.6 0.055 40);
   }
 }
 
