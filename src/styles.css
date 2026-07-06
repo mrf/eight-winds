@@ -199,6 +199,22 @@ a {
   font-style: italic;
 }
 
+/* --- First-run intro ------------------------------------------------------ */
+
+.view-intro {
+  margin-top: 1.5rem;
+}
+
+.view-intro > p {
+  color: var(--ink-soft);
+}
+
+.intro-begin {
+  display: block;
+  margin: 1.5rem auto 0;
+  min-width: 10rem;
+}
+
 /* --- Wind guide ---------------------------------------------------------- */
 
 .guide-toggle {

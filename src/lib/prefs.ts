@@ -4,6 +4,7 @@ export type DisplayLang = 'english' | 'pali';
 
 const DISPLAY_KEY = 'ew.display';
 const BACKUP_KEY = 'ew.lastBackupAt';
+const INTRO_KEY = 'ew.introSeen';
 
 export function getDisplayLang(): DisplayLang {
   return localStorage.getItem(DISPLAY_KEY) === 'pali' ? 'pali' : 'english';
@@ -11,6 +12,14 @@ export function getDisplayLang(): DisplayLang {
 
 export function setDisplayLang(lang: DisplayLang): void {
   localStorage.setItem(DISPLAY_KEY, lang);
+}
+
+export function getIntroSeen(): boolean {
+  return localStorage.getItem(INTRO_KEY) === '1';
+}
+
+export function setIntroSeen(): void {
+  localStorage.setItem(INTRO_KEY, '1');
 }
 
 export function getLastBackupAt(): number | null {

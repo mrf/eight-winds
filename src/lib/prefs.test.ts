@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { getDisplayLang, getLastBackupAt, setDisplayLang, setLastBackupAt, windLabel } from './prefs';
+import {
+  getDisplayLang,
+  getIntroSeen,
+  getLastBackupAt,
+  setDisplayLang,
+  setIntroSeen,
+  setLastBackupAt,
+  windLabel,
+} from './prefs';
 
 beforeEach(() => {
   localStorage.clear();
@@ -28,6 +36,17 @@ describe('windLabel', () => {
 
   it('puts Pali first when preferred', () => {
     expect(windLabel('gain', 'pali')).toEqual({ primary: 'lābha', secondary: 'Gain' });
+  });
+});
+
+describe('intro', () => {
+  it('is unseen by default', () => {
+    expect(getIntroSeen()).toBe(false);
+  });
+
+  it('remembers dismissal', () => {
+    setIntroSeen();
+    expect(getIntroSeen()).toBe(true);
   });
 });
 

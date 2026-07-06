@@ -1,14 +1,41 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/preact';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/preact';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { App } from './app';
 import { addEntry, getAllEntries, resetDbForTests } from './lib/db';
+import { setIntroSeen } from './lib/prefs';
 import { at, makeEntry, resetIndexedDb } from './test/helpers';
 
 beforeEach(() => {
   resetDbForTests();
   resetIndexedDb();
   localStorage.clear();
+  setIntroSeen();
   location.hash = '';
+});
+
+describe('first run', () => {
+  it('greets a new visitor with the guide, once', async () => {
+    localStorage.clear();
+    render(<App />);
+    expect(await screen.findByText(/measures nothing/i)).toBeTruthy();
+    expect(await screen.findByText(/Losing something you had/)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Gain' })).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Begin' }));
+    expect(await screen.findByRole('button', { name: 'Gain' })).toBeTruthy();
+
+    cleanup();
+    render(<App />);
+    expect(await screen.findByRole('button', { name: 'Gain' })).toBeTruthy();
+    expect(screen.queryByText(/measures nothing/i)).toBeNull();
+  });
+
+  it('can log a first wind straight from the intro guide', async () => {
+    localStorage.clear();
+    render(<App />);
+    fireEvent.click(await screen.findByRole('button', { name: /Kind words aimed at you/ }));
+    expect(await screen.findByRole('heading', { name: /How strongly is it blowing/ })).toBeTruthy();
+  });
 });
 
 describe('compass (home)', () => {
@@ -60,6 +87,17 @@ describe('journal', () => {
     render(<App />);
     fireEvent.click(await screen.findByRole('link', { name: 'Journal' }));
     expect(await screen.findByText('code review sting')).toBeTruthy();
+  });
+});
+
+describe('reflect', () => {
+  it('offers the wind guide, and a tapped description selects that wind', async () => {
+    render(<App />);
+    fireEvent.click(await screen.findByRole('link', { name: 'Reflect' }));
+    fireEvent.click(await screen.findByRole('button', { name: /What are the winds/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /Kind words aimed at you/ }));
+    const chip = await screen.findByRole('button', { name: 'Praise' });
+    expect(chip.getAttribute('aria-pressed')).toBe('true');
   });
 });
 

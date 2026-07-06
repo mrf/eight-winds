@@ -1,5 +1,6 @@
 import type { JSX } from 'preact';
 import { useState } from 'preact/hooks';
+import { WindGuide } from '../components/WindGuide';
 import {
   COMPASS_ORDER,
   INTENSITIES,
@@ -31,6 +32,7 @@ export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
   const [selected, setSelected] = useState<readonly Wind[]>([]);
   const [specs, setSpecs] = useState<Partial<Record<Wind, QuickSpec>>>({});
   const [status, setStatus] = useState<string | null>(null);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   const insights = patternInsights(entries, Date.now());
 
@@ -84,6 +86,24 @@ export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
           </button>
         ))}
       </div>
+
+      <button
+        type="button"
+        class="ghost guide-toggle"
+        aria-expanded={guideOpen}
+        onClick={() => {
+          setGuideOpen(!guideOpen);
+        }}
+      >
+        What are the winds?
+      </button>
+      {guideOpen && (
+        <WindGuide
+          lang={lang}
+          intro="Tap a wind to add it to this evening's review."
+          onSelect={toggle}
+        />
+      )}
 
       {selected.map((wind) => {
         const spec = specs[wind] ?? DEFAULT_SPEC;

@@ -4,8 +4,14 @@ import { CompassRose } from './components/CompassRose';
 import { WindGuide } from './components/WindGuide';
 import { addEntry, deleteEntry, getAllEntries } from './lib/db';
 import type { Wind, WindEntry } from './lib/model';
-import { getDisplayLang, setDisplayLang, type DisplayLang } from './lib/prefs';
-import { getLastBackupAt } from './lib/prefs';
+import {
+  getDisplayLang,
+  getIntroSeen,
+  getLastBackupAt,
+  setDisplayLang,
+  setIntroSeen,
+  type DisplayLang,
+} from './lib/prefs';
 import { shouldRemindBackup } from './lib/stats';
 import { LogFlow } from './views/LogFlow';
 import { Journal } from './views/Journal';
@@ -33,6 +39,7 @@ export function App(): JSX.Element {
   const [view, setView] = useState<View>(viewFromHash);
   const [logging, setLogging] = useState<Wind | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [introOpen, setIntroOpen] = useState(() => !getIntroSeen());
   const [entries, setEntries] = useState<readonly WindEntry[]>([]);
   const [lang, setLang] = useState<DisplayLang>(getDisplayLang);
 
@@ -82,6 +89,11 @@ export function App(): JSX.Element {
 
   const remindBackup = shouldRemindBackup(entries, getLastBackupAt(), Date.now());
 
+  const dismissIntro = (): void => {
+    setIntroSeen();
+    setIntroOpen(false);
+  };
+
   return (
     <div class="app">
       <header class="app-header">
@@ -101,7 +113,31 @@ export function App(): JSX.Element {
           />
         ) : (
           <>
-            {view === 'compass' && (
+            {view === 'compass' && introOpen && (
+              <section class="view-intro">
+                <p>
+                  The Buddha spoke of eight worldly winds — four pairs of conditions that blow
+                  through every life: gain and loss, status and disrepute, praise and blame,
+                  pleasure and pain.
+                </p>
+                <p>
+                  This app measures nothing. It only helps you look — at which wind is blowing,
+                  and at how the mind meets it.
+                </p>
+                <WindGuide
+                  lang={lang}
+                  intro=""
+                  onSelect={(wind) => {
+                    dismissIntro();
+                    setLogging(wind);
+                  }}
+                />
+                <button type="button" class="primary intro-begin" onClick={dismissIntro}>
+                  Begin
+                </button>
+              </section>
+            )}
+            {view === 'compass' && !introOpen && (
               <section class="view-compass">
                 <p class="compass-prompt">Which wind is blowing?</p>
                 <CompassRose lang={lang} onSelect={setLogging} />
