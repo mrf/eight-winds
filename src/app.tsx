@@ -1,6 +1,7 @@
 import type { JSX } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { CompassRose } from './components/CompassRose';
+import { WindGuide } from './components/WindGuide';
 import { addEntry, deleteEntry, getAllEntries } from './lib/db';
 import type { Wind, WindEntry } from './lib/model';
 import { getDisplayLang, setDisplayLang, type DisplayLang } from './lib/prefs';
@@ -31,6 +32,7 @@ function viewFromHash(): View {
 export function App(): JSX.Element {
   const [view, setView] = useState<View>(viewFromHash);
   const [logging, setLogging] = useState<Wind | null>(null);
+  const [guideOpen, setGuideOpen] = useState(false);
   const [entries, setEntries] = useState<readonly WindEntry[]>([]);
   const [lang, setLang] = useState<DisplayLang>(getDisplayLang);
 
@@ -103,6 +105,17 @@ export function App(): JSX.Element {
               <section class="view-compass">
                 <p class="compass-prompt">Which wind is blowing?</p>
                 <CompassRose lang={lang} onSelect={setLogging} />
+                <button
+                  type="button"
+                  class="ghost guide-toggle"
+                  aria-expanded={guideOpen}
+                  onClick={() => {
+                    setGuideOpen(!guideOpen);
+                  }}
+                >
+                  What are the winds?
+                </button>
+                {guideOpen && <WindGuide lang={lang} onSelect={setLogging} />}
                 {remindBackup && (
                   <p class="quiet-banner">
                     It has been a while since you saved your record.{' '}

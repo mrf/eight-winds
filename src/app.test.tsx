@@ -20,6 +20,21 @@ describe('compass (home)', () => {
   });
 });
 
+describe('wind guide', () => {
+  it('explains the winds in plain language and can log straight from a description', async () => {
+    render(<App />);
+    fireEvent.click(await screen.findByRole('button', { name: /What are the winds/i }));
+    expect(await screen.findByText(/Losing something you had/)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: /Losing something you had/ }));
+    expect(await screen.findByRole('heading', { name: /How strongly is it blowing/ })).toBeTruthy();
+    // The chosen wind's description is echoed in the log flow for confirmation.
+    expect(screen.getByText(/Losing something you had/)).toBeTruthy();
+    const saved = await getAllEntries();
+    expect(saved).toHaveLength(0);
+  });
+});
+
 describe('logging a wind', () => {
   it('walks intensity, response, and save, then lands the entry in the record', async () => {
     render(<App />);

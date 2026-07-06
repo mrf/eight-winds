@@ -90,15 +90,47 @@ export interface WindEntry {
   domain?: Domain;
 }
 
-export const WIND_INFO: Record<Wind, { en: string; pali: string }> = {
-  gain: { en: 'Gain', pali: 'lābha' },
-  loss: { en: 'Loss', pali: 'alābha' },
-  fame: { en: 'Status', pali: 'yasa' },
-  disrepute: { en: 'Disrepute', pali: 'ayasa' },
-  praise: { en: 'Praise', pali: 'pasaṃsā' },
-  blame: { en: 'Blame', pali: 'nindā' },
-  pleasure: { en: 'Pleasure', pali: 'sukha' },
-  pain: { en: 'Pain', pali: 'dukkha' },
+export const WIND_INFO: Record<Wind, { en: string; pali: string; description: string }> = {
+  gain: {
+    en: 'Gain',
+    pali: 'lābha',
+    description: 'Getting something you wanted — money, an opportunity, a win, things going your way.',
+  },
+  loss: {
+    en: 'Loss',
+    pali: 'alābha',
+    description: 'Losing something you had — money, a possession, an opportunity, a person.',
+  },
+  fame: {
+    en: 'Status',
+    pali: 'yasa',
+    description: 'Standing rising — recognition, a title, influence, being included, followers.',
+  },
+  disrepute: {
+    en: 'Disrepute',
+    pali: 'ayasa',
+    description: 'Standing falling — being overlooked, left out, demoted, or thought less of.',
+  },
+  praise: {
+    en: 'Praise',
+    pali: 'pasaṃsā',
+    description: 'Kind words aimed at you — a compliment, approval, a good review, applause.',
+  },
+  blame: {
+    en: 'Blame',
+    pali: 'nindā',
+    description: 'Hard words aimed at you — criticism, a complaint, a bad review, an accusation.',
+  },
+  pleasure: {
+    en: 'Pleasure',
+    pali: 'sukha',
+    description: 'Comfort or delight in body or mind — good food, ease, warmth, good news.',
+  },
+  pain: {
+    en: 'Pain',
+    pali: 'dukkha',
+    description: 'Discomfort in body or mind — illness, tiredness, an ache, bad news.',
+  },
 };
 
 export function isOneOf<T extends string>(values: readonly T[], v: unknown): v is T {

@@ -47,6 +47,15 @@ describe('winds', () => {
       expect(WIND_INFO[wind].pali.length).toBeGreaterThan(0);
     }
   });
+
+  it('describes every wind in plain language', () => {
+    for (const wind of WINDS) {
+      const description = WIND_INFO[wind].description;
+      expect(description.length).toBeGreaterThan(20);
+      // Plain words, not doctrine: no Pali inside the descriptions.
+      expect(description).not.toMatch(/[āṃṭḍṇḷ]/);
+    }
+  });
 });
 
 describe('responses and scales', () => {

@@ -7,6 +7,7 @@ import {
   INTENSITY_INFO,
   RESPONSES,
   RESPONSE_INFO,
+  WIND_INFO,
   type Domain,
   type Intensity,
   type ResponseQuality,
@@ -72,6 +73,7 @@ export function LogFlow({ wind, lang, entriesCount, onSave, onClose }: Props): J
           </button>
         )}
       </header>
+      {step !== 'snippet' && <p class="wind-desc">{WIND_INFO[wind].description}</p>}
 
       {step === 'intensity' && (
         <div class="log-step">

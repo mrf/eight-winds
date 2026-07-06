@@ -199,6 +199,53 @@ a {
   font-style: italic;
 }
 
+/* --- Wind guide ---------------------------------------------------------- */
+
+.guide-toggle {
+  margin: 0.4rem auto 0;
+  display: block;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.wind-guide {
+  text-align: left;
+  margin-top: 0.6rem;
+}
+
+.guide-pair {
+  border-top: 1px solid var(--line);
+  padding: 0.5rem 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+button.guide-wind {
+  background: none;
+  border: none;
+  min-height: 0;
+  padding: 0.35rem 0;
+  text-align: left;
+  display: grid;
+  gap: 0.1rem;
+}
+
+.guide-name {
+  border-left: 3px solid;
+  padding-left: 0.5rem;
+}
+
+.guide-desc,
+.wind-desc {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+}
+
+.wind-desc {
+  margin: 0 0 0.8rem;
+  font-style: italic;
+}
+
 /* --- Charts ------------------------------------------------------------ */
 
 .windrose-chart,
