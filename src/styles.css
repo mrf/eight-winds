@@ -164,10 +164,16 @@ a {
   fill: none;
   stroke: var(--line);
   stroke-width: 1;
+  transition: stroke 250ms ease;
+}
+
+.compass-rose.has-active .rose-ring {
+  stroke: var(--active-wind, var(--line));
 }
 
 .rose-hub {
-  fill: var(--ink-soft);
+  fill: var(--active-wind, var(--ink-soft));
+  transition: fill 250ms ease;
 }
 
 .rose-wind {
@@ -176,20 +182,91 @@ a {
 }
 
 .rose-petal {
+  fill: var(--wc);
   stroke: var(--ink-soft);
   stroke-width: 0.75;
   opacity: 0.85;
-  transition: opacity 120ms ease;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transition:
+    opacity 220ms ease,
+    transform 260ms cubic-bezier(0.2, 0.8, 0.3, 1),
+    filter 260ms ease;
+  animation: rose-bloom 480ms ease backwards;
+  animation-delay: calc(var(--i, 0) * 55ms);
 }
 
-.rose-wind:hover .rose-petal,
-.rose-wind:focus-visible .rose-petal {
+@keyframes rose-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+}
+
+.rose-wind.is-active .rose-petal {
   opacity: 1;
+  transform: scale(1.07);
+  filter: drop-shadow(0 0 6px var(--wc));
+}
+
+/* The opposite stirs, gently, when its counterpart is touched. */
+.rose-wind.is-opposite .rose-petal {
+  opacity: 0.95;
+  transform: scale(1.02);
+}
+
+.rose-wind.is-dim .rose-petal {
+  opacity: 0.4;
+}
+
+.rose-wind.is-dim .rose-label,
+.rose-wind.is-dim .rose-sublabel {
+  opacity: 0.5;
 }
 
 .rose-label {
   font-size: 13px;
+  fill: var(--ink-soft);
+  transition:
+    fill 200ms ease,
+    font-size 200ms ease,
+    opacity 200ms ease;
+}
+
+.rose-sublabel {
+  transition:
+    fill 200ms ease,
+    opacity 200ms ease;
+}
+
+.rose-wind.is-active .rose-label {
   fill: var(--ink);
+  font-size: 14.5px;
+}
+
+.rose-wind.is-active .rose-sublabel {
+  fill: var(--ink);
+  fill: color-mix(in oklab, var(--wc) 55%, var(--ink));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rose-petal {
+    animation: none;
+    transition: opacity 220ms ease;
+  }
+
+  .rose-wind.is-active .rose-petal,
+  .rose-wind.is-opposite .rose-petal {
+    transform: none;
+  }
+
+  .rose-wind.is-active .rose-label {
+    font-size: 13px;
+  }
 }
 
 .rose-sublabel,

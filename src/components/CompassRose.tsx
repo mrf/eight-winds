@@ -1,5 +1,6 @@
 import type { JSX } from 'preact';
-import { COMPASS_ORDER, WIND_INFO, type Wind } from '../lib/model';
+import { useState } from 'preact/hooks';
+import { COMPASS_ORDER, OPPOSITES, WIND_INFO, type Wind } from '../lib/model';
 import { windLabel, type DisplayLang } from '../lib/prefs';
 
 interface Props {
@@ -22,13 +23,30 @@ function kitePoints(deg: number): string {
   return [tip, left, tail, right].map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
 }
 
+function windState(active: Wind | null, wind: Wind): string {
+  if (active === null) {
+    return '';
+  }
+  if (active === wind) {
+    return ' is-active';
+  }
+  // The opposite stirs when a wind is touched — the pair is never far behind.
+  if (OPPOSITES[active] === wind) {
+    return ' is-opposite';
+  }
+  return ' is-dim';
+}
+
 export function CompassRose({ lang, onSelect }: Props): JSX.Element {
+  const [active, setActive] = useState<Wind | null>(null);
+
   return (
     <svg
-      class="compass-rose"
+      class={`compass-rose${active !== null ? ' has-active' : ''}`}
       viewBox="0 0 340 340"
       role="group"
       aria-label="Compass of the eight winds"
+      style={active !== null ? `--active-wind: var(--wind-${active})` : undefined}
     >
       <circle cx={C} cy={C} r={118} class="rose-ring" />
       {COMPASS_ORDER.map((wind, i) => {
@@ -41,7 +59,8 @@ export function CompassRose({ lang, onSelect }: Props): JSX.Element {
             role="button"
             tabIndex={0}
             aria-label={WIND_INFO[wind].en}
-            class="rose-wind"
+            class={`rose-wind${windState(active, wind)}`}
+            style={`--wc: var(--wind-${wind}); --i: ${String(i)}`}
             onClick={() => {
               onSelect(wind);
             }}
@@ -51,12 +70,20 @@ export function CompassRose({ lang, onSelect }: Props): JSX.Element {
                 onSelect(wind);
               }
             }}
+            onPointerEnter={() => {
+              setActive(wind);
+            }}
+            onPointerLeave={() => {
+              setActive(null);
+            }}
+            onFocus={() => {
+              setActive(wind);
+            }}
+            onBlur={() => {
+              setActive(null);
+            }}
           >
-            <polygon
-              points={kitePoints(deg)}
-              class="rose-petal"
-              style={`fill: var(--wind-${wind})`}
-            />
+            <polygon points={kitePoints(deg)} class="rose-petal" />
             <text x={lp.x.toFixed(1)} y={lp.y.toFixed(1)} class="rose-label" text-anchor="middle">
               {label.primary}
             </text>
