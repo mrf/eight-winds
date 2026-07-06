@@ -1,5 +1,6 @@
 import type { JSX } from 'preact';
 import { useState } from 'preact/hooks';
+import { GustGlyph } from '../components/GustGlyph';
 import { SnippetCard } from '../components/SnippetCard';
 import {
   DOMAINS,
@@ -62,7 +63,7 @@ export function LogFlow({ wind, lang, entriesCount, onSave, onClose }: Props): J
   };
 
   return (
-    <section class="log-flow">
+    <section class="log-flow" style={`--wc: var(--wind-${wind})`}>
       <header class="log-header">
         <h2>
           {label.primary} <span class="sublabel">{label.secondary}</span>
@@ -83,13 +84,13 @@ export function LogFlow({ wind, lang, entriesCount, onSave, onClose }: Props): J
               <button
                 type="button"
                 key={n}
-                class="option"
+                class="option option-gust"
                 onClick={() => {
                   setIntensity(n);
                   setStep('response');
                 }}
               >
-                <span class="option-glyph">{'～'.repeat(n)}</span>
+                <GustGlyph intensity={n} />
                 {INTENSITY_INFO[n - 1]}
               </button>
             ))}
