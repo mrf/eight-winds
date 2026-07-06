@@ -5,6 +5,7 @@
   "type": "module",
   "description": "A contemplative tracker for the eight worldly winds (aṭṭha lokadhammā)",
   "license": "MIT",
+  "author": "Mark Ferree",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

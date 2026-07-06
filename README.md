@@ -26,6 +26,19 @@ Stack: Preact + Vite + TypeScript (full strict family), `idb` for IndexedDB,
 hand-rolled SVG charts, `vite-plugin-pwa` (Workbox) for offline. Deploys to GitHub Pages
 via `.github/workflows/deploy.yml` on push to `main`.
 
+## Contributing
+
+Issues and pull requests are welcome. The bar to merge: `npm run verify` passes —
+the full test suite, ESLint at its strictest settings (warnings are errors), and a
+clean typed build. The design document ([DESIGN.md](DESIGN.md)) explains the
+intent behind the choices; changes that add engagement mechanics (streaks,
+badges, notifications that manufacture reasons to open the app) are out of scope
+by design.
+
+## License
+
+[MIT](LICENSE). The code is offered as the app is: freely.
+
 ## Source text
 
 > "Gain and loss, status and disgrace, censure and praise, pleasure and pain: these
