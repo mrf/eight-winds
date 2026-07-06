@@ -13,20 +13,19 @@ import {
   type DisplayLang,
 } from './lib/prefs';
 import { shouldRemindBackup } from './lib/stats';
+import { EveningReview } from './views/EveningReview';
 import { LogFlow } from './views/LogFlow';
 import { Journal } from './views/Journal';
-import { Reflect } from './views/Reflect';
 import { Settings } from './views/Settings';
 import { Weather } from './views/Weather';
 
-const VIEWS = ['compass', 'weather', 'journal', 'reflect', 'settings'] as const;
+const VIEWS = ['compass', 'weather', 'journal', 'settings'] as const;
 type View = (typeof VIEWS)[number];
 
 const NAV_LABELS: Record<View, string> = {
   compass: 'Compass',
   weather: 'Weather',
   journal: 'Journal',
-  reflect: 'Reflect',
   settings: 'Settings',
 };
 
@@ -39,6 +38,7 @@ export function App(): JSX.Element {
   const [view, setView] = useState<View>(viewFromHash);
   const [logging, setLogging] = useState<Wind | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
   const [introOpen, setIntroOpen] = useState(() => !getIntroSeen());
   const [entries, setEntries] = useState<readonly WindEntry[]>([]);
   const [lang, setLang] = useState<DisplayLang>(getDisplayLang);
@@ -137,7 +137,16 @@ export function App(): JSX.Element {
                 </button>
               </section>
             )}
-            {view === 'compass' && !introOpen && (
+            {view === 'compass' && !introOpen && reviewing && (
+              <EveningReview
+                lang={lang}
+                onSave={saveEntry}
+                onClose={() => {
+                  setReviewing(false);
+                }}
+              />
+            )}
+            {view === 'compass' && !introOpen && !reviewing && (
               <section class="view-compass">
                 <p class="compass-prompt">Which wind is blowing?</p>
                 <CompassRose lang={lang} onSelect={setLogging} />
@@ -150,6 +159,15 @@ export function App(): JSX.Element {
                   }}
                 >
                   What are the winds?
+                </button>
+                <button
+                  type="button"
+                  class="ghost guide-toggle"
+                  onClick={() => {
+                    setReviewing(true);
+                  }}
+                >
+                  Review the day
                 </button>
                 {guideOpen && <WindGuide lang={lang} onSelect={setLogging} />}
                 {remindBackup && (
@@ -171,7 +189,6 @@ export function App(): JSX.Element {
             )}
             {view === 'weather' && <Weather entries={entries} lang={lang} />}
             {view === 'journal' && <Journal entries={entries} lang={lang} onDelete={removeEntry} />}
-            {view === 'reflect' && <Reflect entries={entries} lang={lang} onSave={saveEntry} />}
             {view === 'settings' && (
               <Settings entries={entries} lang={lang} onLangChange={changeLang} onRefresh={refresh} />
             )}
@@ -188,6 +205,7 @@ export function App(): JSX.Element {
             onClick={(e) => {
               e.preventDefault();
               setLogging(null);
+              setReviewing(false);
               navigate(v);
             }}
           >

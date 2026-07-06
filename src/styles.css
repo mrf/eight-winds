@@ -727,7 +727,9 @@ button.option:focus-visible .gust-stroke {
 @media (prefers-reduced-motion: reduce) {
   .gust-stroke,
   button.option:hover .gust-stroke,
-  button.option:focus-visible .gust-stroke {
+  button.option:focus-visible .gust-stroke,
+  button.chip-gust:hover .gust-stroke,
+  button.chip-gust:focus-visible .gust-stroke {
     animation: none;
     stroke-dasharray: none;
   }
@@ -881,9 +883,45 @@ button.option:focus-visible .gust-stroke {
   color: var(--ink-soft);
 }
 
-.reflect-wind {
+.review-wind {
   border-top: 1px solid var(--line);
   margin-top: 1rem;
+}
+
+.review-wind h3 {
+  border-left: 3px solid var(--wc, var(--line));
+  padding-left: 0.6rem;
+}
+
+button.wind-chip:hover {
+  border-color: var(--wc, var(--accent));
+}
+
+button.wind-chip[aria-pressed='true'] {
+  background: var(--wc);
+  border-color: var(--wc);
+  color: var(--ink);
+}
+
+button.chip-gust {
+  padding: 0.3rem 0.6rem;
+}
+
+.chip-gust .gust {
+  width: 44px;
+  height: 20px;
+}
+
+button.chip-gust[aria-pressed='true'] .gust-stroke {
+  stroke: var(--paper);
+}
+
+button.chip-gust:hover .gust-stroke,
+button.chip-gust:focus-visible .gust-stroke {
+  stroke: var(--wc, var(--accent));
+  stroke-dasharray: 58 42;
+  animation: gust-flow 800ms linear infinite;
+  animation-delay: calc(var(--s, 0) * -140ms);
 }
 
 .settings-actions {

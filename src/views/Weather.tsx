@@ -7,6 +7,7 @@ import {
   entriesSince,
   equanimityPhrase,
   pairBalance,
+  patternInsights,
   weeklyResponseBuckets,
   windCounts,
   type WeekBucket,
@@ -78,6 +79,7 @@ export function Weather({ entries, lang }: Props): JSX.Element {
   const recent = entriesSince(entries, now, period);
   const phrase = equanimityPhrase(entries, now);
   const balance = pairBalance(entries);
+  const insights = patternInsights(entries, now);
   const lastBackupAt = getLastBackupAt();
 
   return (
@@ -153,6 +155,17 @@ export function Weather({ entries, lang }: Props): JSX.Element {
           <p class="quiet-note">
             Over long horizons, each wind and its opposite tend to arrive in equal measure.
           </p>
+
+          {insights.length > 0 && (
+            <>
+              <h3>Worth a look</h3>
+              {insights.map((q) => (
+                <blockquote class="insight" key={q}>
+                  {q}
+                </blockquote>
+              ))}
+            </>
+          )}
 
           <p class="quiet-note">
             Last saved:{' '}

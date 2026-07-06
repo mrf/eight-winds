@@ -23,4 +23,15 @@ describe('weather dashboard', () => {
     expect(weeks).toHaveLength(8);
     expect(weeks[3]?.getAttribute('style')).toContain('--i: 3');
   });
+
+  it('surfaces pattern questions when recent entries cluster', () => {
+    const now = Date.now();
+    const entries = Array.from({ length: 6 }, (_, i) =>
+      makeEntry({ timestamp: now - (i + 1) * 3_600_000, wind: 'blame', domain: 'work' }),
+    );
+    render(<Weather entries={entries} lang="english" />);
+    const insights = [...document.querySelectorAll('.insight')];
+    expect(insights.length).toBeGreaterThan(0);
+    expect(insights.map((el) => el.textContent).join(' ')).toContain('Blame');
+  });
 });

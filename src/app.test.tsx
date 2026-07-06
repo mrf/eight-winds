@@ -90,10 +90,29 @@ describe('journal', () => {
   });
 });
 
-describe('reflect', () => {
-  it('offers the wind guide, and a tapped description selects that wind', async () => {
+describe('evening review', () => {
+  it('is a compass affordance, not a tab', async () => {
     render(<App />);
-    fireEvent.click(await screen.findByRole('link', { name: 'Reflect' }));
+    await screen.findByRole('button', { name: 'Gain' });
+    expect(screen.queryByRole('link', { name: 'Reflect' })).toBeNull();
+    expect(screen.getByRole('button', { name: /Review the day/i })).toBeTruthy();
+  });
+
+  it('records several winds and returns to the compass', async () => {
+    render(<App />);
+    fireEvent.click(await screen.findByRole('button', { name: /Review the day/i }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Praise' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Pain' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(async () => {
+      expect(await getAllEntries()).toHaveLength(2);
+    });
+    expect(await screen.findByRole('button', { name: 'Gain' })).toBeTruthy();
+  });
+
+  it('keeps the plain-language guide available inside the review', async () => {
+    render(<App />);
+    fireEvent.click(await screen.findByRole('button', { name: /Review the day/i }));
     fireEvent.click(await screen.findByRole('button', { name: /What are the winds/i }));
     fireEvent.click(await screen.findByRole('button', { name: /Kind words aimed at you/ }));
     const chip = await screen.findByRole('button', { name: 'Praise' });

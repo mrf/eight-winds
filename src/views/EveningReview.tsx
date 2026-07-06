@@ -1,9 +1,11 @@
 import type { JSX } from 'preact';
 import { useState } from 'preact/hooks';
+import { GustGlyph } from '../components/GustGlyph';
 import { WindGuide } from '../components/WindGuide';
 import {
   COMPASS_ORDER,
   INTENSITIES,
+  INTENSITY_INFO,
   RESPONSES,
   RESPONSE_INFO,
   type Intensity,
@@ -12,13 +14,12 @@ import {
   type WindEntry,
 } from '../lib/model';
 import { windLabel, type DisplayLang } from '../lib/prefs';
-import { patternInsights } from '../lib/stats';
 import { ulid } from '../lib/ulid';
 
 interface Props {
-  entries: readonly WindEntry[];
   lang: DisplayLang;
   onSave: (entry: WindEntry) => Promise<void>;
+  onClose: () => void;
 }
 
 interface QuickSpec {
@@ -28,16 +29,17 @@ interface QuickSpec {
 
 const DEFAULT_SPEC: QuickSpec = { intensity: 3, response: 'caughtLate' };
 
-export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
+/**
+ * Batch logging for the end of the day — reached from the compass, not a
+ * tab of its own (§3.3: the evening review is a mode of logging, not a
+ * separate activity).
+ */
+export function EveningReview({ lang, onSave, onClose }: Props): JSX.Element {
   const [selected, setSelected] = useState<readonly Wind[]>([]);
   const [specs, setSpecs] = useState<Partial<Record<Wind, QuickSpec>>>({});
-  const [status, setStatus] = useState<string | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
 
-  const insights = patternInsights(entries, Date.now());
-
   const toggle = (wind: Wind): void => {
-    setStatus(null);
     setSelected((prev) =>
       prev.includes(wind) ? prev.filter((w) => w !== wind) : [...prev, wind],
     );
@@ -60,15 +62,18 @@ export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
           response: spec.response,
         });
       }
-      setSelected([]);
-      setSpecs({});
-      setStatus('Recorded.');
+      onClose();
     })();
   };
 
   return (
-    <section class="view-reflect">
-      <h2>Reflect</h2>
+    <section class="view-review">
+      <header class="log-header">
+        <h2>Evening review</h2>
+        <button type="button" class="ghost" aria-label="Close review" onClick={onClose}>
+          ✕
+        </button>
+      </header>
       <p class="compass-prompt">Which winds blew today?</p>
 
       <div class="chip-row">
@@ -76,7 +81,8 @@ export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
           <button
             type="button"
             key={wind}
-            class="chip"
+            class="chip wind-chip"
+            style={`--wc: var(--wind-${wind})`}
             aria-pressed={selected.includes(wind)}
             onClick={() => {
               toggle(wind);
@@ -109,7 +115,7 @@ export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
         const spec = specs[wind] ?? DEFAULT_SPEC;
         const label = windLabel(wind, lang);
         return (
-          <div class="reflect-wind" key={wind}>
+          <div class="review-wind" key={wind} style={`--wc: var(--wind-${wind})`}>
             <h3>
               {label.primary} <span class="sublabel">{label.secondary}</span>
             </h3>
@@ -118,13 +124,14 @@ export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
                 <button
                   type="button"
                   key={n}
-                  class="chip"
+                  class="chip chip-gust"
+                  aria-label={INTENSITY_INFO[n - 1] ?? String(n)}
                   aria-pressed={spec.intensity === n}
                   onClick={() => {
                     patch(wind, { intensity: n });
                   }}
                 >
-                  {n}
+                  <GustGlyph intensity={n} />
                 </button>
               ))}
             </div>
@@ -151,18 +158,6 @@ export function Reflect({ entries, lang, onSave }: Props): JSX.Element {
         <button type="button" class="primary" onClick={saveAll}>
           Save
         </button>
-      )}
-      {status !== null && <p class="gentle-phrase">{status}</p>}
-
-      {insights.length > 0 && (
-        <>
-          <h3>Worth a look</h3>
-          {insights.map((q) => (
-            <blockquote class="insight" key={q}>
-              {q}
-            </blockquote>
-          ))}
-        </>
       )}
     </section>
   );
