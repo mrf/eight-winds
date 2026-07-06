@@ -31,6 +31,8 @@ export function Journal({ entries, lang, onDelete }: Props): JSX.Element {
     .filter((e) => domainFilter === 'all' || e.domain === domainFilter)
     .filter((e) => needle === '' || (e.note ?? '').toLowerCase().includes(needle));
 
+  const orderOf = new Map(filtered.map((e, i) => [e.id, i]));
+
   const groups: { date: string; items: WindEntry[] }[] = [];
   for (const entry of filtered) {
     const date = new Date(entry.timestamp).toLocaleDateString(undefined, {
@@ -105,9 +107,13 @@ export function Journal({ entries, lang, onDelete }: Props): JSX.Element {
               {group.items.map((entry) => {
                 const label = windLabel(entry.wind, lang);
                 return (
-                  <li class="journal-entry" key={entry.id}>
+                  <li
+                    class="journal-entry"
+                    key={entry.id}
+                    style={`--wc: var(--wind-${entry.wind}); --i: ${String(orderOf.get(entry.id) ?? 0)}`}
+                  >
                     <div class="entry-head">
-                      <span class="entry-wind" style={`border-color: var(--wind-${entry.wind})`}>
+                      <span class="entry-wind">
                         {label.primary} <span class="sublabel">{label.secondary}</span>
                       </span>
                       <span class="entry-meta">

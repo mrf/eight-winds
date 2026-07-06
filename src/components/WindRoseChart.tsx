@@ -24,7 +24,12 @@ function petalPoints(deg: number, r: number): string {
 export function WindRoseChart({ counts, lang }: Props): JSX.Element {
   const max = Math.max(1, ...Object.values(counts));
   return (
-    <svg class="windrose-chart" viewBox="0 0 300 300" role="img" aria-label="Wind rose of recent entries">
+    <svg
+      class="windrose-chart"
+      viewBox="0 0 300 300"
+      role="img"
+      aria-label="Wind rose of recent entries"
+    >
       {COMPASS_ORDER.map((wind, i) => {
         const deg = -90 + i * 45;
         const guide = polar(104, deg);
@@ -32,7 +37,11 @@ export function WindRoseChart({ counts, lang }: Props): JSX.Element {
         const count = counts[wind];
         const label = windLabel(wind, lang);
         return (
-          <g key={wind}>
+          <g
+            key={wind}
+            class="windrose-wind"
+            style={`--wc: var(--wind-${wind}); --i: ${String(i)}`}
+          >
             <line
               x1={C}
               y1={C}
@@ -41,15 +50,21 @@ export function WindRoseChart({ counts, lang }: Props): JSX.Element {
               class="windrose-spoke"
             />
             {count > 0 && (
-              <polygon
-                points={petalPoints(deg, 16 + (count / max) * 84)}
-                class="windrose-petal"
-                style={`fill: var(--wind-${wind})`}
-              />
+              <polygon points={petalPoints(deg, 16 + (count / max) * 84)} class="windrose-petal" />
             )}
             <text x={lp.x.toFixed(1)} y={lp.y.toFixed(1)} class="windrose-label" text-anchor="middle">
               {label.primary}
             </text>
+            {count > 0 && (
+              <text
+                x={lp.x.toFixed(1)}
+                y={(lp.y + 11).toFixed(1)}
+                class="windrose-count"
+                text-anchor="middle"
+              >
+                {count}
+              </text>
+            )}
           </g>
         );
       })}

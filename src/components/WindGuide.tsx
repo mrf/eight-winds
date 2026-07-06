@@ -31,11 +31,12 @@ export function WindGuide({ lang, onSelect, intro = DEFAULT_INTRO }: Props): JSX
                 type="button"
                 class="guide-wind"
                 key={wind}
+                style={`--wc: var(--wind-${wind})`}
                 onClick={() => {
                   onSelect(wind);
                 }}
               >
-                <span class="guide-name" style={`border-color: var(--wind-${wind})`}>
+                <span class="guide-name">
                   {label.primary} <span class="sublabel">{label.secondary}</span>
                 </span>
                 <span class="guide-desc">{WIND_INFO[wind].description}</span>

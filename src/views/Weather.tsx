@@ -45,7 +45,7 @@ function TrendChart({ buckets }: { buckets: readonly WeekBucket[] }): JSX.Elemen
         const x = gap + i * (barWidth + gap);
         let y = height - 6;
         return (
-          <g key={bucket.start}>
+          <g key={bucket.start} style={`--i: ${String(i)}`}>
             <line x1={x} y1={height - 5} x2={x + barWidth} y2={height - 5} class="trend-base" />
             {RESPONSES.map((r) => {
               const h = (bucket.counts[r] / maxTotal) * (height - 16);
@@ -128,12 +128,20 @@ export function Weather({ entries, lang }: Props): JSX.Element {
               const total = counts[0] + counts[1];
               const leftShare = total === 0 ? 0.5 : counts[0] / total;
               return (
-                <div class="pair-row" key={pair[0]}>
+                <div
+                  class="pair-row"
+                  key={pair[0]}
+                  style={`--wa: var(--wind-${pair[0]}); --wb: var(--wind-${pair[1]})`}
+                >
                   <span class="pair-label">
                     {windLabel(pair[0], lang).primary} {counts[0]}
                   </span>
-                  <span class="pair-track">
-                    <span class="pair-fill" style={`width: ${String(leftShare * 100)}%`} />
+                  <span class={total === 0 ? 'pair-track empty' : 'pair-track'}>
+                    <span class="pair-fill pair-fill-left" style={`width: ${String(leftShare * 100)}%`} />
+                    <span
+                      class="pair-fill pair-fill-right"
+                      style={`width: ${String((1 - leftShare) * 100)}%`}
+                    />
                   </span>
                   <span class="pair-label pair-label-right">
                     {counts[1]} {windLabel(pair[1], lang).primary}

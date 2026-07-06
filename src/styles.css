@@ -133,6 +133,25 @@ a {
   text-decoration: none;
   color: var(--ink-soft);
   border-bottom: 2px solid transparent;
+  transition:
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.app-nav a:hover {
+  color: var(--ink);
+}
+
+/* Every view drifts in like weather settling. */
+.app-main > section {
+  animation: fade-rise 300ms ease backwards;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }
 
 .app-nav a.active {
@@ -317,14 +336,33 @@ button.guide-wind {
   background: none;
   border: none;
   min-height: 0;
-  padding: 0.35rem 0;
+  padding: 0.35rem 0.4rem;
   text-align: left;
   display: grid;
   gap: 0.1rem;
+  border-radius: 2px;
+  transition:
+    background 200ms ease,
+    transform 220ms cubic-bezier(0.2, 0.8, 0.3, 1),
+    opacity 200ms ease;
+}
+
+.wind-guide:hover button.guide-wind:not(:hover) {
+  opacity: 0.6;
+}
+
+button.guide-wind:hover,
+button.guide-wind:focus-visible {
+  background: color-mix(in oklab, var(--wc) 10%, var(--paper));
+  transform: translateX(6px);
+}
+
+button.guide-wind:hover .sublabel {
+  color: color-mix(in oklab, var(--wc) 55%, var(--ink));
 }
 
 .guide-name {
-  border-left: 3px solid;
+  border-left: 3px solid var(--wc);
   padding-left: 0.5rem;
 }
 
@@ -355,9 +393,58 @@ button.guide-wind {
 }
 
 .windrose-petal {
+  fill: var(--wc);
   stroke: var(--ink-soft);
   stroke-width: 0.5;
   opacity: 0.85;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transition:
+    opacity 220ms ease,
+    transform 260ms cubic-bezier(0.2, 0.8, 0.3, 1),
+    filter 260ms ease;
+  animation: rose-bloom 480ms ease backwards;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+.windrose-wind:hover .windrose-petal {
+  opacity: 1;
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 5px var(--wc));
+}
+
+.windrose-chart:hover .windrose-wind:not(:hover) .windrose-petal {
+  opacity: 0.45;
+}
+
+.windrose-chart:hover .windrose-wind:not(:hover) .windrose-label {
+  opacity: 0.55;
+}
+
+.windrose-label {
+  transition:
+    fill 200ms ease,
+    opacity 200ms ease;
+}
+
+.windrose-wind:hover .windrose-label {
+  fill: var(--ink);
+}
+
+.windrose-count {
+  font-size: 10px;
+  fill: var(--ink-soft);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.windrose-wind:hover .windrose-count {
+  opacity: 1;
+}
+
+.trend-chart g {
+  animation: fade-rise 400ms ease backwards;
+  animation-delay: calc(var(--i, 0) * 45ms);
 }
 
 .trend-segment {
@@ -404,6 +491,20 @@ button.guide-wind {
   align-items: center;
   gap: 0.6rem;
   font-size: 0.88rem;
+  transition: opacity 200ms ease;
+}
+
+.pair-balance:hover .pair-row:not(:hover) {
+  opacity: 0.6;
+}
+
+.pair-label {
+  color: var(--ink-soft);
+  transition: color 200ms ease;
+}
+
+.pair-row:hover .pair-label {
+  color: var(--ink);
 }
 
 .pair-label-right {
@@ -411,17 +512,37 @@ button.guide-wind {
 }
 
 .pair-track {
+  display: flex;
   height: 0.5rem;
   background: var(--paper-2);
   border: 1px solid var(--line);
   overflow: hidden;
 }
 
+/* Each side of a pair fills in its own hue — equal weight, meeting in the middle. */
 .pair-fill {
   display: block;
   height: 100%;
-  background: var(--accent);
-  opacity: 0.55;
+  opacity: 0.8;
+  animation: pair-grow 600ms ease backwards;
+}
+
+.pair-fill-left {
+  background: var(--wa);
+}
+
+.pair-fill-right {
+  background: var(--wb);
+}
+
+.pair-track.empty .pair-fill {
+  opacity: 0.2;
+}
+
+@keyframes pair-grow {
+  from {
+    width: 0;
+  }
 }
 
 /* --- Buttons and inputs ------------------------------------------------ */
@@ -463,6 +584,14 @@ button.chip {
   padding: 0.35rem 0.8rem;
   font-size: 0.88rem;
   border-radius: 999px;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+button.chip:hover {
+  border-color: var(--accent);
 }
 
 button.chip[aria-pressed='true'] {
@@ -646,6 +775,28 @@ button.option:focus-visible .gust-stroke {
   border-radius: 2px;
   padding: 0.6rem 0.8rem;
   background: var(--paper-2);
+  animation: fade-rise 320ms ease backwards;
+  animation-delay: calc(min(var(--i, 0), 12) * 45ms);
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.3, 1),
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+.journal-entry:hover {
+  transform: translateX(5px);
+  border-color: color-mix(in oklab, var(--wc) 45%, var(--line));
+  background: color-mix(in oklab, var(--wc) 8%, var(--paper-2));
+}
+
+.journal-entry .entry-delete {
+  opacity: 0.45;
+  transition: opacity 200ms ease;
+}
+
+.journal-entry:hover .entry-delete,
+.journal-entry:focus-within .entry-delete {
+  opacity: 1;
 }
 
 .entry-head {
@@ -655,7 +806,7 @@ button.option:focus-visible .gust-stroke {
 }
 
 .entry-wind {
-  border-left: 3px solid;
+  border-left: 3px solid var(--wc);
   padding-left: 0.5rem;
 }
 
@@ -682,6 +833,7 @@ button.option:focus-visible .gust-stroke {
   padding: 1rem 1.2rem;
   border-left: 2px solid var(--accent);
   background: var(--paper-2);
+  animation: fade-rise 400ms ease backwards;
 }
 
 .snippet blockquote {
@@ -744,4 +896,25 @@ button.option:focus-visible .gust-stroke {
   color: var(--ink-soft);
   font-size: 0.92rem;
   padding-left: 1.4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-main > section,
+  .journal-entry,
+  .trend-chart g,
+  .pair-fill,
+  .snippet,
+  .windrose-petal {
+    animation: none;
+  }
+
+  .journal-entry:hover,
+  button.guide-wind:hover,
+  button.guide-wind:focus-visible {
+    transform: none;
+  }
+
+  .windrose-wind:hover .windrose-petal {
+    transform: none;
+  }
 }
