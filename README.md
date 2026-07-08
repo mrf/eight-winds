@@ -1,5 +1,7 @@
 # Eight Winds
 
+**[Live app: mrf.github.io/eight-winds](https://mrf.github.io/eight-winds/)**
+
 A contemplative tracker for the **eight worldly winds** (aṭṭha lokadhammā) — gain and loss,
 status and disrepute, praise and blame, pleasure and pain. Not a mood tracker: the unit of
 observation is *which wind is blowing, and how the mind is meeting it*. See
