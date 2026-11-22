@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "idb": "^8.0.3",
-    "preact": "^10.29.8"
+    "preact": "^11.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
